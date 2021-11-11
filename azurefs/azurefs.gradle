@@ -1,0 +1,22 @@
+archivesBaseName = 'azurefs'
+
+dependencies {
+    implementation 'io.jmix.core:jmix-core-starter'
+//    implementation 'io.jmix.data:jmix-eclipselink-starter'
+//    implementation 'io.jmix.ui:jmix-ui-starter'
+//    implementation 'io.jmix.ui:jmix-ui-themes'
+
+    implementation("com.azure:azure-storage-blob:12.14.1")
+    implementation("org.apache.tika:tika-core:2.1.0")
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testRuntimeOnly 'org.hsqldb:hsqldb'
+}
+
+test {
+    useJUnitPlatform()
+}
