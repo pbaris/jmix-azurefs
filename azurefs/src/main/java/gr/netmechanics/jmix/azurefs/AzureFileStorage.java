@@ -60,14 +60,14 @@ public class AzureFileStorage implements FileStorage {
         this(DEFAULT_STORAGE_NAME);
     }
 
-    public AzureFileStorage(String storageName) {
+    public AzureFileStorage(final String storageName) {
         this.storageName = storageName;
     }
 
     /**
      * Optional constructor that allows you to override {@link AzureFileStorageProperties}.
      */
-    public AzureFileStorage(String storageName, String connectionString, String containerName) {
+    public AzureFileStorage(final String storageName, final String connectionString, final String containerName) {
         this.useConfigurationProperties = false;
         this.storageName = storageName;
         this.connectionString = connectionString;
@@ -75,7 +75,7 @@ public class AzureFileStorage implements FileStorage {
     }
 
     @EventListener
-    public void initBlobContainerClient(ApplicationStartedEvent event) {
+    public void initBlobContainerClient(final ApplicationStartedEvent event) {
         refreshBlobContainerClient();
     }
 
@@ -86,7 +86,7 @@ public class AzureFileStorage implements FileStorage {
         }
     }
 
-    private void refreshBlobContainerClient() {
+    void refreshBlobContainerClient() {
         refreshProperties();
         Preconditions.checkNotEmptyString(connectionString, "connectionString must not be empty");
         Preconditions.checkNotEmptyString(containerName, "containerName must not be empty");
@@ -136,7 +136,7 @@ public class AzureFileStorage implements FileStorage {
         }
     }
 
-    private String createFileKey(String fileName) {
+    private String createFileKey(final String fileName) {
         return createDateDir() + "/" + createUuidFilename(fileName);
     }
 
@@ -152,7 +152,7 @@ public class AzureFileStorage implements FileStorage {
             StringUtils.leftPad(String.valueOf(day), 2, '0'));
     }
 
-    private String createUuidFilename(String fileName) {
+    private String createUuidFilename(final String fileName) {
         String extension = FilenameUtils.getExtension(fileName);
         if (StringUtils.isNotEmpty(extension)) {
             return UuidProvider.createUuid() + "." + extension;
@@ -194,5 +194,13 @@ public class AzureFileStorage implements FileStorage {
     public boolean fileExists(final FileRef reference) {
         BlobContainerClient client = clientReference.get();
         return client != null && client.getBlobClient(reference.getPath()).exists();
+    }
+
+    void setConnectionString(final String connectionString) {
+        this.connectionString = connectionString;
+    }
+
+    void setContainerName(final String containerName) {
+        this.containerName = containerName;
     }
 }
