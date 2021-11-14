@@ -1,13 +1,14 @@
 package gr.netmechanics.jmix.azurefs;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.Calendar;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.azure.core.util.Context;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
@@ -15,6 +16,8 @@ import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobErrorCode;
 import com.azure.storage.blob.models.BlobHttpHeaders;
 import com.azure.storage.blob.models.BlobStorageException;
+import com.azure.storage.blob.models.ParallelTransferOptions;
+import com.azure.storage.blob.options.BlobParallelUploadOptions;
 import io.jmix.core.FileRef;
 import io.jmix.core.FileStorage;
 import io.jmix.core.FileStorageException;
@@ -24,7 +27,6 @@ import io.jmix.core.UuidProvider;
 import io.jmix.core.annotation.Internal;
 import io.jmix.core.common.util.Preconditions;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ import org.springframework.stereotype.Component;
 public class AzureFileStorage implements FileStorage {
 
     private static final Logger log = LoggerFactory.getLogger(AzureFileStorage.class);
-    private static final String DEFAULT_STORAGE_NAME = "azure";
+    private static final String DEFAULT_STORAGE_NAME = "azurefs";
 
     @Autowired
     private AzureFileStorageProperties properties;
@@ -55,6 +57,8 @@ public class AzureFileStorage implements FileStorage {
     private boolean useConfigurationProperties = true;
     private String connectionString;
     private String containerName;
+    private long blockSize;
+    private int maxConcurrency;
 
     public AzureFileStorage() {
         this(DEFAULT_STORAGE_NAME);
@@ -67,11 +71,14 @@ public class AzureFileStorage implements FileStorage {
     /**
      * Optional constructor that allows you to override {@link AzureFileStorageProperties}.
      */
-    public AzureFileStorage(final String storageName, final String connectionString, final String containerName) {
+    public AzureFileStorage(final String storageName, final String connectionString,
+                            final String containerName, final long blockSize, final int maxConcurrency) {
         this.useConfigurationProperties = false;
         this.storageName = storageName;
         this.connectionString = connectionString;
         this.containerName = containerName;
+        this.blockSize = blockSize;
+        this.maxConcurrency = maxConcurrency;
     }
 
     @EventListener
@@ -83,6 +90,8 @@ public class AzureFileStorage implements FileStorage {
         if (useConfigurationProperties) {
             this.connectionString = properties.getConnectionString();
             this.containerName = properties.getContainerName();
+            this.blockSize = properties.getBlockSize();
+            this.maxConcurrency = properties.getMaxConcurrency();
         }
     }
 
@@ -117,20 +126,21 @@ public class AzureFileStorage implements FileStorage {
     @Override
     public FileRef saveStream(final String fileName, final InputStream inputStream) {
         String fileKey = createFileKey(fileName);
-
         try {
-            final byte[] data = IOUtils.toByteArray(inputStream);
-            Preconditions.checkNotNullArgument(data, "File content is null");
-
             BlobClient blobClient = clientReference.get().getBlobClient(fileKey);
-            blobClient.upload(new ByteArrayInputStream(data), data.length, true);
 
-            Optional.of(FileTypesHelper.getMIMEType(fileName)).ifPresent(mimeType ->
-                blobClient.setHttpHeaders(new BlobHttpHeaders().setContentType(mimeType)));
+            final BlobParallelUploadOptions uploadOptions = new BlobParallelUploadOptions(new BufferedInputStream(inputStream))
+                .setParallelTransferOptions(new ParallelTransferOptions()
+                    .setBlockSizeLong(blockSize)
+                    .setMaxConcurrency(maxConcurrency))
+                .setHeaders(new BlobHttpHeaders()
+                    .setContentType(FileTypesHelper.getMIMEType(fileName)));
+
+            blobClient.uploadWithResponse(uploadOptions, Duration.ofMinutes(30), new Context("key", "value"));
 
             return new FileRef(getStorageName(), fileKey, fileName);
 
-        } catch (NullPointerException | IOException e) {
+        } catch (NullPointerException e) {
             String message = String.format("Could not save file %s.", fileName);
             throw new FileStorageException(FileStorageException.Type.IO_EXCEPTION, message);
         }

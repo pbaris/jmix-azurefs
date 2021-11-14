@@ -10,7 +10,6 @@ dependencies {
     api project(':azurefs')
 
     implementation 'io.jmix.core:jmix-core'
-//    implementation 'io.jmix.data:jmix-data'
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
 }

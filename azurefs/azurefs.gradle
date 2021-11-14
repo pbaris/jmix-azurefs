@@ -2,10 +2,6 @@ archivesBaseName = 'azurefs'
 
 dependencies {
     implementation 'io.jmix.core:jmix-core-starter'
-//    implementation 'io.jmix.data:jmix-eclipselink-starter'
-//    implementation 'io.jmix.ui:jmix-ui-starter'
-//    implementation 'io.jmix.ui:jmix-ui-themes'
-
     implementation("com.azure:azure-storage-blob:12.14.1")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
