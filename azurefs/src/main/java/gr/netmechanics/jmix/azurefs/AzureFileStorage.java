@@ -213,4 +213,12 @@ public class AzureFileStorage implements FileStorage {
     void setContainerName(final String containerName) {
         this.containerName = containerName;
     }
+
+    void setBlockSize(final long blockSize) {
+        this.blockSize = blockSize;
+    }
+
+    void setMaxConcurrency(final int maxConcurrency) {
+        this.maxConcurrency = maxConcurrency;
+    }
 }

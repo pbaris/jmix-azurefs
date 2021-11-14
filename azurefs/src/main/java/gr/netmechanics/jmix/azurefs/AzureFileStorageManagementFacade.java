@@ -45,4 +45,27 @@ public class AzureFileStorageManagementFacade {
         }
         return "Not an Azure file storage - refresh attempt ignored";
     }
+
+    @ManagedOperation(description = "Refresh Azure file storage client by storage name")
+    @ManagedOperationParameters({
+        @ManagedOperationParameter(name = "storageName", description = "Storage name"),
+        @ManagedOperationParameter(name = "connectionString", description = "Azure storage connection string"),
+        @ManagedOperationParameter(name = "containerName", description = "Azure storage container name"),
+        @ManagedOperationParameter(name = "blockSize", description = "The block size (chunk size) to transfer at a time"),
+        @ManagedOperationParameter(name = "maxConcurrency",
+            description = "The maximum number of parallel requests that will be issued at any given time as a part of a single parallel transfer")})
+    public String refreshAzureClient(final String storageName, final String connectionString,
+                                     final String containerName, final int blockSize, final int maxConcurrency) {
+        FileStorage fileStorage = fileStorageLocator.getByName(storageName);
+        if (fileStorage instanceof AzureFileStorage) {
+            AzureFileStorage azFileStorage = (AzureFileStorage) fileStorage;
+            azFileStorage.setConnectionString(connectionString);
+            azFileStorage.setContainerName(containerName);
+            azFileStorage.setBlockSize(blockSize);
+            azFileStorage.setMaxConcurrency(maxConcurrency);
+            azFileStorage.refreshBlobContainerClient();
+            return "Refreshed successfully";
+        }
+        return "Not an Azure file storage - refresh attempt ignored";
+    }
 }
