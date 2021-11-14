@@ -23,7 +23,7 @@ public class AzureFileStorageProperties {
     private final String containerName;
 
     /**
-     * Sets the block size (chunk size) to transfer at a time.
+     * The block size (chunk size) to transfer at a time.
      */
     private final long blockSize;
 
