@@ -24,7 +24,7 @@ subprojects {
     }
 
     jmix {
-        bomVersion = '1.1.0'
+        bomVersion = '1.2.2'
         projectId = 'azurefs'
     }
 
