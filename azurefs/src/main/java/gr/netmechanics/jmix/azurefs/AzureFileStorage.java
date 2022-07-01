@@ -177,7 +177,7 @@ public class AzureFileStorage implements FileStorage {
         try {
             clientReference.get()
                 .getBlobClient(reference.getPath())
-                .download(out);
+                .downloadStream(out);
 
             return new ByteArrayInputStream(out.toByteArray());
 
