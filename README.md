@@ -14,11 +14,12 @@ The following table shows which version of the add-on is compatible with which v
 | 1.2.*        | 1.2.2          | gr.netmechanics.jmix:azurefs-starter:1.2.2 |
 | 1.3.*        | 1.3.1          | gr.netmechanics.jmix:azurefs-starter:1.3.1 |
 | 1.4.*        | 1.4.0          | gr.netmechanics.jmix:azurefs-starter:1.4.0 |
+| 1.5.*        | 1.5.0          | gr.netmechanics.jmix:azurefs-starter:1.5.0 |
 
 Add to your project's `build.gradle` dependencies:
 
 ```gradle
-implementation 'gr.netmechanics.jmix:azurefs-starter:1.4.0'
+implementation 'gr.netmechanics.jmix:azurefs-starter:1.5.0'
 ```
 
 # Configuration
