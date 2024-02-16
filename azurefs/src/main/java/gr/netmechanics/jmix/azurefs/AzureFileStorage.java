@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Calendar;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.azure.core.util.Context;
@@ -18,6 +19,7 @@ import com.azure.storage.blob.models.BlobHttpHeaders;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.azure.storage.blob.models.ParallelTransferOptions;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
+import com.google.common.collect.Maps;
 import io.jmix.core.FileRef;
 import io.jmix.core.FileStorage;
 import io.jmix.core.FileStorageException;
@@ -124,7 +126,7 @@ public class AzureFileStorage implements FileStorage {
     }
 
     @Override
-    public FileRef saveStream(final String fileName, final InputStream inputStream) {
+    public FileRef saveStream(final String fileName, final InputStream inputStream, final Map<String, Object> parameters) {
         String fileKey = createFileKey(fileName);
         try {
             BlobClient blobClient = clientReference.get().getBlobClient(fileKey);
@@ -138,7 +140,8 @@ public class AzureFileStorage implements FileStorage {
 
             blobClient.uploadWithResponse(uploadOptions, Duration.ofMinutes(30), new Context("key", "value"));
 
-            return new FileRef(getStorageName(), fileKey, fileName);
+            Map<String, String> fileRefParameters = Maps.toMap(parameters.keySet(), k -> parameters.get(k).toString());
+            return new FileRef(getStorageName(), fileKey, fileName, fileRefParameters);
 
         } catch (NullPointerException e) {
             String message = String.format("Could not save file %s.", fileName);

@@ -9,11 +9,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
 
     testRuntimeOnly 'org.hsqldb:hsqldb'
-    implementation 'com.azure:azure-storage-blob:12.21.1'
+    implementation 'com.azure:azure-storage-blob:12.25.1'
 }
 
 test {
     useJUnitPlatform()
 }
 
-version = '1.5.0'
+version = '2.1.0'

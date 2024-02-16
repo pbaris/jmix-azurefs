@@ -2,14 +2,12 @@ package gr.netmechanics.jmix.azurefs;
 
 import com.azure.storage.blob.models.ParallelTransferOptions;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
  * @author Panos Bariamis (pbaris)
  */
 @ConfigurationProperties(prefix = "jmix.azurefs")
-@ConstructorBinding
 public class AzureFileStorageProperties {
 
     /**
