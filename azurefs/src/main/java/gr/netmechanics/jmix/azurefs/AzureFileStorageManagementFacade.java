@@ -36,8 +36,7 @@ public class AzureFileStorageManagementFacade {
         @ManagedOperationParameter(name = "containerName", description = "Azure storage container name")})
     public String refreshAzureClient(final String storageName, final String connectionString, final String containerName) {
         FileStorage fileStorage = fileStorageLocator.getByName(storageName);
-        if (fileStorage instanceof AzureFileStorage) {
-            AzureFileStorage azFileStorage = (AzureFileStorage) fileStorage;
+        if (fileStorage instanceof AzureFileStorage azFileStorage) {
             azFileStorage.setConnectionString(connectionString);
             azFileStorage.setContainerName(containerName);
             azFileStorage.refreshBlobContainerClient();
@@ -57,8 +56,7 @@ public class AzureFileStorageManagementFacade {
     public String refreshAzureClient(final String storageName, final String connectionString,
                                      final String containerName, final int blockSize, final int maxConcurrency) {
         FileStorage fileStorage = fileStorageLocator.getByName(storageName);
-        if (fileStorage instanceof AzureFileStorage) {
-            AzureFileStorage azFileStorage = (AzureFileStorage) fileStorage;
+        if (fileStorage instanceof AzureFileStorage azFileStorage) {
             azFileStorage.setConnectionString(connectionString);
             azFileStorage.setContainerName(containerName);
             azFileStorage.setBlockSize(blockSize);
