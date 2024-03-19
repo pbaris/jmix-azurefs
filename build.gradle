@@ -13,7 +13,6 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
     apply plugin: 'io.jmix'
-    apply plugin: 'signing'
 
     repositories {
         mavenCentral()
@@ -43,10 +42,6 @@ subprojects {
         archives sourcesJar
     }
 
-    ext {
-        isReleaseVersion = !version.endsWith("SNAPSHOT")
-    }
-
     publishing {
         repositories {
             maven {
@@ -69,5 +64,10 @@ subprojects {
     // remove after https://youtrack.jetbrains.com/issue/IDEA-227215 is fixed
     tasks.withType(GenerateModuleMetadata) {
         enabled = false
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.compilerArgs.add("-parameters")
     }
 }

@@ -19,7 +19,6 @@ package gr.netmechanics.jmix.azurefs.autoconfigure;
 import gr.netmechanics.jmix.azurefs.AzureFileStorageConfiguration;
 import io.jmix.core.CoreConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @AutoConfiguration

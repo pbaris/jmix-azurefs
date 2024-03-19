@@ -32,8 +32,8 @@ public class AzureFileStorageProperties {
 
     public AzureFileStorageProperties(final String connectionString,
                                       final String containerName,
-                                      @DefaultValue("1048576") int blockSize, // 1ΜΒ
-                                      @DefaultValue("2") int maxConcurrency) {
+                                      @DefaultValue("1048576") final int blockSize, // 1ΜΒ
+                                      @DefaultValue("2") final int maxConcurrency) {
         this.connectionString = connectionString;
         this.containerName = containerName;
         this.blockSize = blockSize;
