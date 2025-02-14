@@ -1,3 +1,7 @@
+## [2.4.0] - 2025-02-14
+
+- Compatibility with Jmix 2.5
+
 ## [2.3.0] - 2024-12-04
 
 - Compatibility with Jmix 2.4

@@ -18,6 +18,7 @@ The following table shows which version of the add-on is compatible with which v
 | 2.1.*        | 2.1.0          | gr.netmechanics.jmix:azurefs-starter:2.1.0 |
 | 2.2.*        | 2.2.2          | gr.netmechanics.jmix:azurefs-starter:2.2.2 |
 | 2.4.*        | 2.3.0          | gr.netmechanics.jmix:azurefs-starter:2.3.0 |
+| 2.5.*        | 2.4.0          | gr.netmechanics.jmix:azurefs-starter:2.4.0 |
 
 Add to your project's `build.gradle` dependencies:
 
