@@ -1,3 +1,8 @@
+## [2.5.0] - 2025-06-19
+
+- Compatibility with Jmix 2.6
+- Upgrade to azure-storage-blob 12.30.0
+
 ## [2.4.0] - 2025-02-14
 
 - Compatibility with Jmix 2.5

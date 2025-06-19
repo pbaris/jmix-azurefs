@@ -9,7 +9,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
 
     testRuntimeOnly 'org.hsqldb:hsqldb'
-    implementation 'com.azure:azure-storage-blob:12.29.0'
+    implementation 'com.azure:azure-storage-blob:12.30.0'
 }
 
 test {
