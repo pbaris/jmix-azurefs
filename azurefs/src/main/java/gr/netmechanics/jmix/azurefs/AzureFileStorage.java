@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.azure.core.util.Context;
@@ -30,6 +31,8 @@ import io.jmix.core.annotation.Internal;
 import io.jmix.core.common.util.Preconditions;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +40,7 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-/**
- * @author Panos Bariamis (pbaris)
- */
+@NullMarked
 @Internal
 @Component("azurefs_FileStorage")
 public class AzureFileStorage implements FileStorage {
@@ -53,12 +54,17 @@ public class AzureFileStorage implements FileStorage {
     @Autowired
     private TimeSource timeSource;
 
-    private final AtomicReference<BlobContainerClient> clientReference = new AtomicReference<>();
+    private final AtomicReference<@Nullable BlobContainerClient> clientReference = new AtomicReference<>();
     private final String storageName;
 
     private boolean useConfigurationProperties = true;
+
+    @Nullable
     private String connectionString;
+
+    @Nullable
     private String containerName;
+
     private long blockSize;
     private int maxConcurrency;
 
@@ -129,7 +135,7 @@ public class AzureFileStorage implements FileStorage {
     public FileRef saveStream(final String fileName, final InputStream inputStream, final Map<String, Object> parameters) {
         String fileKey = createFileKey(fileName);
         try {
-            BlobClient blobClient = clientReference.get().getBlobClient(fileKey);
+            BlobClient blobClient = getBlobContainerClient().getBlobClient(fileKey);
 
             final BlobParallelUploadOptions uploadOptions = new BlobParallelUploadOptions(new BufferedInputStream(inputStream))
                 .setParallelTransferOptions(new ParallelTransferOptions()
@@ -178,7 +184,7 @@ public class AzureFileStorage implements FileStorage {
     public InputStream openStream(final FileRef reference) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            clientReference.get()
+            getBlobContainerClient()
                 .getBlobClient(reference.getPath())
                 .downloadStream(out);
 
@@ -193,7 +199,7 @@ public class AzureFileStorage implements FileStorage {
     @Override
     public void removeFile(final FileRef reference) {
         try {
-            clientReference.get()
+            getBlobContainerClient()
                 .getBlobClient(reference.getPath())
                 .delete();
 
@@ -223,5 +229,9 @@ public class AzureFileStorage implements FileStorage {
 
     void setMaxConcurrency(final int maxConcurrency) {
         this.maxConcurrency = maxConcurrency;
+    }
+
+    private BlobContainerClient getBlobContainerClient() {
+        return Objects.requireNonNull(clientReference.get(), "BlobContainerClient not initialized");
     }
 }

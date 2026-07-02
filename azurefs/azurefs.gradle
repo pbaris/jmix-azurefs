@@ -1,7 +1,10 @@
-archivesBaseName = 'azurefs'
+base {
+    archivesName = 'azurefs'
+}
 
 dependencies {
     implementation 'io.jmix.core:jmix-core-starter'
+    implementation 'com.azure:azure-storage-blob:12.35.0'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -9,7 +12,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
 
     testRuntimeOnly 'org.hsqldb:hsqldb'
-    implementation 'com.azure:azure-storage-blob:12.33.3'
 }
 
 test {

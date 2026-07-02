@@ -1,9 +1,5 @@
-archivesBaseName = 'azurefs-starter'
-
-jmix {
-    entitiesEnhancing {
-        enabled = false
-    }
+base {
+    archivesName = 'azurefs-starter'
 }
 
 dependencies {

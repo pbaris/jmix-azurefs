@@ -1,0 +1,7 @@
+<credits xmlns="http://jmix.io/schema/core/credits">
+	<items>
+		<item name="Azure SDK for Java" url="https://github.com/Azure/azure-sdk-for-java">
+			<license ref="mit"/>
+		</item>
+	</items>
+</credits>
